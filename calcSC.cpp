@@ -1,14 +1,12 @@
 // Code by Wassim Sameh Makram Fahim 2001194
 // Began on 21:15 - 5/10/22
 
-#include <bits/stdc++.h>
-using namespace std;
-
 /*
  *
  Comment 1:
- All the functions contain a data type, as the return value can be used for extended tasks.
- Yet these uses are not in the scope of this project, thus rendered useless.
+ All the functions has a parallel value, as a return value that can be used for extended tasks, e.g.: A Complete Linear
+ Algebra Calculator that works with the results of these functions.
+ Yet these uses are not in the scope of this project (Except for the Division Function), thus rendered useless.
  For the scope of this project, please consider all functions as void functions, as they already display results.
 
  Comment 2:
@@ -20,82 +18,84 @@ using namespace std;
  B -> Accepted
  C -> Accepted
  D -> Accepted
- E -> Wrong Answer on test 3
+ E -> Accepted (Using the Gauss-Jordan Elimination Algorithm, and not with the Echelon Form Algorithm)
  F -> Accepted
- G -> Pending
- H -> Pending
- I -> Pending
+ G -> Accepted
+ H -> Wrong answer on test 3
+ I -> Accepted
 
  Comment 4:
  Report 1:
  It's 3:45 - 5/11/22, I've submitted 6 out of the 9, and with 5 of them accepted, I believe I'm onto a good start.
  What's left is to debug the Determinant function and to try some more test cases with it.
  Also, I need to work on the Inverting Algorithm for the Division Function and the documentation of existing functions.
- Report is due on 6/4/22, so I think I've got enough time. 
+ Report is due on 6/4/22, so I think I've got enough time.
+ Report 2:
+ Began on 19:30 - 5/11/22, Ended on.
  *
  */
 
-double Det;
+#include <bits/stdc++.h>
+using namespace std;
 
-/*
 
-// Functions for Testing:
+
+long double Det;
+const double EPS = 1E-9;
+
+vector<vector<double>> sum;
+vector<vector<double>> dif;
+vector<vector<double>> pro;
+vector<vector<double>> trn;
+
+
 
 void Display(const vector<vector<double>>& Matrix){
     for(auto & i : Matrix){
         for(double Element : i){
-            cout<<Element<<" ";
-        }
-        cout<<"\n";
-    }
-}// Working Properly, Overloaded, Just for Testing
-
-void Display(const vector<int>& Matrix){
-    for(auto & Element : Matrix){
-        cout<<Element<<" ";
-    }
-}// Working Properly, Overloaded, Just for Testing
-
-*/
-
-void Display(const vector<vector<int>>& Matrix){
-    for(auto & i : Matrix){
-        for(int Element : i){
-            cout<<Element<<" ";
+            if(Element<0){
+                Element -= 0.5;
+            }
+            else{
+                Element += 0.5;
+            }
+            cout<<int(Element)<<" ";
         }
         cout<<"\n";
     }
 }// Working Properly
 
-vector<vector<int>> Addition(vector<vector<int>>& A, vector<vector<int>>& B, int Arows, int Acols, int Brows,int Bcols){
-    vector<vector<int>> res (A.size());
+void Addition(vector<vector<double>>& A, vector<vector<double>>& B, int Arows, int Acols, int Brows,int Bcols){
+    vector<vector<double>> res (A.size());
     if((Arows!=Brows)||(Acols!=Bcols)){
         cout<<"The operation you chose is invalid for the given matrices."<<endl;
-        return res;
+        return;
     }
     for(int i = 0; i < Arows; i++)
         for(int j = 0; j < Acols; j++)
             res[i].push_back( A[i][j] + B[i][j] );
     Display(res);
-    return res;
+    sum = res;
+    return;
 }// Working Properly
 
-vector<vector<int>> Subtraction(vector<vector<int>>& A, vector<vector<int>>& B, int Arows, int Acols, int Brows,int Bcols){
-    vector<vector<int>> res (A.size());
+void Subtraction(vector<vector<double>>& A, vector<vector<double>>& B, int Arows, int Acols, int Brows,int Bcols){
+    vector<vector<double>> res (A.size());
     if((Arows!=Brows)||(Acols!=Bcols)){
         cout<<"The operation you chose is invalid for the given matrices."<<endl;
-        return res;
+        return;
     }
     for(int i = 0; i < Arows; i++)
         for(int j = 0; j < Acols; j++)
             res[i].push_back( A[i][j] - B[i][j] );
     Display(res);
-    return res;
+    dif = res;
+    return;
 }// Working Properly
 
-int dotProductVect(vector<int>& A, vector<int>& B){
+double dotProductVect(vector<double>& A, vector<double>& B){
     unsigned long long a = A.size(), b = B.size();
-    int res = 0;
+    double res = 0;
     if(a!=b){
         cout<<"The operation you chose is invalid for the given matrices."<<endl;
         return res;
@@ -105,39 +105,42 @@ int dotProductVect(vector<int>& A, vector<int>& B){
     return res;
 }// Working Properly
 
-vector<int> getColumnVector(vector<vector<int>> Matrix, int Column){
+vector<double> getColumnVector(vector<vector<double>> Matrix, int Column){
     unsigned long long n = Matrix[0].size();
-    vector<int> res;
+    vector<double> res;
     if(Column>n){
         cout<<"The operation you chose is invalid for the given matrices."<<endl;
         return res;
     }
-    for(vector<int> Row : Matrix){
+    for(vector<double> Row : Matrix){
         res.push_back(Row[Column]);
     }
     return res;
 }// Working Properly
 
-vector<vector<int>> crossProductMat(vector<vector<int>>& A, vector<vector<int>>& B, int Arows, int Acols, int Brows, int Bcols){
-    vector<vector<int>> res (Arows);
+void crossProductMat(vector<vector<double>>& A, vector<vector<double>>& B, int Arows, int Acols, int Brows, int Bcols){
+    vector<vector<double>> res (Arows);
     if(Acols!=Brows){
         cout<<"The operation you chose is invalid for the given matrices."<<endl;
-        return res;
+        return;
     }
     for(int i=0; i<Arows; i++){
         for(int j=0; j<Bcols; j++){
-            vector<int> temp = getColumnVector(B, j);
+            vector<double> temp = getColumnVector(B, j);
             res[i].push_back(dotProductVect(A[i], temp));
         }
     }
     Display(res);
-    return res;
+    pro = res;
+    return;
 }// Working Properly
 
-void Determinant(vector<vector<int>>& A, int Arows, int Acols, int x){
-    double det = 1;
+void Determinant(vector<vector<double>>& A, int Arows, int Acols, int x){
+    long double det = 1;
     if(Arows!=Acols){
-        cout<<"The operation you chose is invalid for the given matrices."<<endl;
+        if(x==1) {
+            cout << "The operation you chose is invalid for the given matrices." << endl;
+        }
         return;
     }
     int n = Arows;
@@ -147,17 +150,30 @@ void Determinant(vector<vector<int>>& A, int Arows, int Acols, int x){
             B[i].push_back(A[i][j]);
         }
     }
-    for(int i=0; i<n; i++){
-        for(int j=i+1; j<n; j++){
-            double a = B[i][i], b = B[j][i];
-            double factor = (b*1.0)/(a*1.0);
-            for(int k=0; k<n; k++){
-                B[j][k] -= factor*(B[i][k]);
+    for (int i=0; i<n; ++i) {
+        int k = i;
+        for (int j=i+1; j<n; ++j) {
+            if (abs(B[j][i]) > abs(B[k][i]))
+                k = j;
+        }
+        if (abs (B[k][i]) < EPS) {
+            det = 0;
+            break;
+        }
+        swap (B[i], B[k]);
+        if (i != k)
+            det = -det;
+        det *= B[i][i];
+        for (int j=i+1; j<n; ++j) {
+            B[i][j] /= B[i][i];
+        }
+        for (int j=0; j<n; ++j) {
+            if (j != i && abs(B[j][i]) > EPS) {
+                for (k = i + 1; k < n; ++k) {
+                    B[j][k] -= B[i][k] * B[j][i];
+                }
             }
         }
-    }
-    for(int i=0; i<n; i++){
-        det *= B[i][i];
     }
     Det = det;
     if(x==1) {
@@ -168,22 +184,113 @@ void Determinant(vector<vector<int>>& A, int Arows, int Acols, int x){
     }
 }// Working Properly
 
-/*
-vector<vector<double>> Inverse(vector<vector<int>>& A, int Arows, int Acols){
-    Determinant(A, Arows, Acols, 0);
-    if((Arows!=Acols)||Det==0){
-        cout<<"The operation you chose is invalid for the given matrices."<<endl;
-    }
-    int n = Arows;
+double determinantRet(vector<vector<double>>& A){
+    long double det = 1;
+    int n = A.size();
     vector<vector<double>> B(n);
     for(int i=0; i<n; i++){
         for(int j=0; j<n; j++){
             B[i].push_back(A[i][j]);
         }
     }
+    for (int i=0; i<n; ++i) {
+        int k = i;
+        for (int j=i+1; j<n; ++j) {
+            if (abs(B[j][i]) > abs(B[k][i]))
+                k = j;
+        }
+        if (abs (B[k][i]) < EPS) {
+            det = 0;
+            break;
+        }
+        swap (B[i], B[k]);
+        if (i != k)
+            det = -det;
+        det *= B[i][i];
+        for (int j=i+1; j<n; ++j) {
+            B[i][j] /= B[i][i];
+        }
+        for (int j=0; j<n; ++j) {
+            if (j != i && abs(B[j][i]) > EPS) {
+                for (k = i + 1; k < n; ++k) {
+                    B[j][k] -= B[i][k] * B[j][i];
+                }
+            }
+        }
+    }
+    return det;
+}// Working Properly
 
-}
-*/
+vector<vector<double>> Transpose(vector<vector<double>>& A){
+    int n = A.size();
+    vector<vector<double>> B(n);
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            B[i].push_back(A[j][i]);
+        }
+    }
+    return B;
+}// Working Properly
+
+vector<vector<double>> minorMat(vector<vector<double>>& A, int x, int y){
+    int n = A.size();
+    int m = A[0].size();
+    vector<vector<double>> res(n-1);
+    for (int i = 0; i < n; ++i) {
+        for(int j = 0; j<m; ++j){
+            if(i!=x&&j!=y){
+                if(i<x)
+                    res[i].push_back(A[i][j]);
+                else
+                    res[i-1].push_back(A[i][j]);
+            }
+        }
+    }
+    return res;
+}// Working Properly
+
+double Minor(vector<vector<double>>& A, int x, int y){
+    vector<vector<double>> B = minorMat(A, x, y);
+    return determinantRet(B);
+}// Working Properly
+
+vector<vector<double>> Cofactor(vector<vector<double>>& A){
+    int n = A.size(); int m = A[0].size();
+    vector<vector<double>> res(n);
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            res[i].push_back(Minor(A, i, j)*pow(-1, i+j));
+        }
+    }
+    return res;
+}// Working Properly
+
+vector<vector<double>> Adjoint(vector<vector<double>>& A){
+    vector<vector<double>> B = Cofactor(A);
+    vector<vector<double>> C = Transpose(B);
+    return C;
+}// Working Properly
+
+vector<vector<double>> Inverse(vector<vector<double>>& A){
+    vector<vector<double>> res = Adjoint(A);
+    double f = 1.0/(1.0*determinantRet(A));
+    for(int i=0; i<res.size(); i++){
+        for(int j=0; j<res[0].size(); j++){
+            res[i][j] *= f;
+        }
+    }
+    return res;
+}// Working Properly
+
+void Division(vector<vector<double>>& A, vector<vector<double>>& B){
+    int n = determinantRet(B);
+    if(n==0){
+        cout << "The operation you chose is invalid for the given matrices." << endl;
+        return;
+    }
+    vector<vector<double>> C = Inverse(B);
+    crossProductMat(A, C, A.size(), A[0].size(), C.size(), C[0].size());
+}// Working Properly
 
 int main() {
 
@@ -205,14 +312,14 @@ int main() {
 
     // Initializing the Matrices:
 
-    vector<vector<int>> A(m), B(x);
+    vector<vector<double>> A(m), B(x);
 
     // Entering Values for Matrix A:
 
     cout<<"Please enter values of Matrix A:"<<endl;
     for(int i=0; i<m; i++){
         for(int j=0; j<n; j++){
-            int a; cin>>a;
+            double a; cin>>a;
             A[i].push_back(a);
         }
     }
@@ -222,7 +329,7 @@ int main() {
     cout<<"Please enter values of Matrix B:"<<endl;
     for(int i=0; i<x; i++){
         for(int j=0; j<y; j++){
-            int b; cin>>b;
+            double b; cin>>b;
             B[i].push_back(b);
         }
     }
@@ -240,6 +347,9 @@ int main() {
                 break;
             case 3:
                 crossProductMat(A, B, m, n, x, y);
+                break;
+            case 4:
+                Division(A, B);
                 break;
             case 5:
                 Determinant(A, m, n, 1);
