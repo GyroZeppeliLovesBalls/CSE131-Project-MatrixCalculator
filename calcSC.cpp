@@ -1,5 +1,5 @@
 // Code by Wassim Sameh Makram Fahim 2001194
-// Began on 9:15 - 5/10/22
+// Began on 21:15 - 5/10/22
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -16,20 +16,47 @@ using namespace std;
 
  Comment 3:
  Passed Tests:
- A -> Pending
- B -> Pending
- C -> Pending
- D -> Pending
- E -> Pending
- F -> Pending
+ A -> Accepted
+ B -> Accepted
+ C -> Accepted
+ D -> Accepted
+ E -> Wrong Answer on test 3
+ F -> Accepted
  G -> Pending
  H -> Pending
  I -> Pending
 
  Comment 4:
-
+ Report 1:
+ It's 3:45 - 5/11/22, I've submitted 6 out of the 9, and with 5 of them accepted, I believe I'm onto a good start.
+ What's left is to debug the Determinant function and to try some more test cases with it.
+ Also, I need to work on the Inverting Algorithm for the Division Function and the documentation of existing functions.
+ Report is due on 6/4/22, so I think I've got enough time. 
  *
  */
+
+double Det;
+
+/*
+
+// Functions for Testing:
+
+void Display(const vector<vector<double>>& Matrix){
+    for(auto & i : Matrix){
+        for(double Element : i){
+            cout<<Element<<" ";
+        }
+        cout<<"\n";
+    }
+}// Working Properly, Overloaded, Just for Testing
+
+void Display(const vector<int>& Matrix){
+    for(auto & Element : Matrix){
+        cout<<Element<<" ";
+    }
+}// Working Properly, Overloaded, Just for Testing
+
+*/
 
 void Display(const vector<vector<int>>& Matrix){
     for(auto & i : Matrix){
@@ -39,12 +66,6 @@ void Display(const vector<vector<int>>& Matrix){
         cout<<"\n";
     }
 }// Working Properly
-
-void Display(const vector<int>& Matrix){
-    for(auto & Element : Matrix){
-        cout<<Element<<" ";
-    }
-}// Working Properly, Overloaded, Just for Testing
 
 vector<vector<int>> Addition(vector<vector<int>>& A, vector<vector<int>>& B, int Arows, int Acols, int Brows,int Bcols){
     vector<vector<int>> res (A.size());
@@ -113,6 +134,57 @@ vector<vector<int>> crossProductMat(vector<vector<int>>& A, vector<vector<int>>&
     return res;
 }// Working Properly
 
+void Determinant(vector<vector<int>>& A, int Arows, int Acols, int x){
+    double det = 1;
+    if(Arows!=Acols){
+        cout<<"The operation you chose is invalid for the given matrices."<<endl;
+        return;
+    }
+    int n = Arows;
+    vector<vector<double>> B(n);
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            B[i].push_back(A[i][j]);
+        }
+    }
+    for(int i=0; i<n; i++){
+        for(int j=i+1; j<n; j++){
+            double a = B[i][i], b = B[j][i];
+            double factor = (b*1.0)/(a*1.0);
+            for(int k=0; k<n; k++){
+                B[j][k] -= factor*(B[i][k]);
+            }
+        }
+    }
+    for(int i=0; i<n; i++){
+        det *= B[i][i];
+    }
+    Det = det;
+    if(x==1) {
+        if (det == 0)
+            cout << 0 << endl;
+        else
+            cout << det << endl;
+    }
+}// Working Properly
+
+/*
+vector<vector<double>> Inverse(vector<vector<int>>& A, int Arows, int Acols){
+    Determinant(A, Arows, Acols, 0);
+    if((Arows!=Acols)||Det==0){
+        cout<<"The operation you chose is invalid for the given matrices."<<endl;
+    }
+    int n = Arows;
+    vector<vector<double>> B(n);
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            B[i].push_back(A[i][j]);
+        }
+    }
+
+}
+*/
+
 int main() {
 
     ios_base::sync_with_stdio(false);
@@ -169,12 +241,16 @@ int main() {
             case 3:
                 crossProductMat(A, B, m, n, x, y);
                 break;
+            case 5:
+                Determinant(A, m, n, 1);
+                break;
+            case 6:
+                Determinant(B, x, y, 1);
+                break;
             case 7:
                 break;
             default:
-                Display(A);
-                cout<<"\n";
-                Display(B);
+                break;
         }
 
     }
