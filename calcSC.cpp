@@ -239,8 +239,8 @@ double Determinant(vector<vector<double>>& A){
  *
  * The Adjoint Matrix of Matrix A is the Transpose of the Cofactor Matrix of Matrix A.
  *
- * The Cofactor Matrix of Matrix A(m×n) is defined as a matrix C(m×n) in which, every entry C(i,j) is equal to the minor.
- * of A(i,j) multiplied by (-1)^(i+j)
+ * The Cofactor Matrix of Matrix A(m×n) is defined as a matrix C(m×n) in which, every entry C(i,j) is equal to the minor
+ * of A(i,j) multiplied by (-1)^(i+j).
  *
  * The Minor of any Entry A(i,j) in a matrix A is equal to the determinant of the Minor Matrix of Entry A(i,j).
  *
